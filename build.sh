@@ -18,8 +18,5 @@ cp frontend/dist/index.html backend/templates/
 python manage.py collectstatic --no-input
 python manage.py migrate
 
-# Create superuser using environment variables
-export DJANGO_SUPERUSER_USERNAME=admin
-export DJANGO_SUPERUSER_EMAIL=admin@example.com
-export DJANGO_SUPERUSER_PASSWORD=admin123
-python manage.py createsuperuser --noinput || echo "Superuser already exists"
+# Create superuser with custom script
+python create_superuser.py
