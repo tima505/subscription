@@ -17,3 +17,6 @@ cp frontend/dist/index.html backend/templates/
 
 python manage.py collectstatic --no-input
 python manage.py migrate
+
+# Create superuser automatically
+python create_superuser.py
