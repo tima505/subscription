@@ -21,7 +21,7 @@ DATABASES = {
 }
 
 # Static files
-STATIC_URL = '/'
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = []
 
@@ -29,6 +29,7 @@ STATICFILES_DIRS = []
 MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 WHITENOISE_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+WHITENOISE_INDEX_FILE = True
 
 # Security
 SECURE_SSL_REDIRECT = True
