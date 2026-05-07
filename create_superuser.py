@@ -27,3 +27,22 @@ user = User.objects.create_superuser(
 print(f'Superuser {username} created successfully with role admin!')
 print(f'Username: {username}')
 print(f'Password: {password}')
+
+# Create manager user
+manager_username = os.environ.get('DJANGO_MANAGER_USERNAME', 'manager')
+manager_password = os.environ.get('DJANGO_MANAGER_PASSWORD', 'manager123')
+manager_email = os.environ.get('DJANGO_MANAGER_EMAIL', 'manager@example.com')
+
+if User.objects.filter(username=manager_username).exists():
+    User.objects.filter(username=manager_username).delete()
+    print(f'Deleted existing user {manager_username}')
+
+manager = User.objects.create_user(
+    username=manager_username,
+    email=manager_email,
+    password=manager_password,
+    role='manager'
+)
+print(f'Manager {manager_username} created successfully!')
+print(f'Username: {manager_username}')
+print(f'Password: {manager_password}')
