@@ -35,6 +35,28 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(clients, many=True)
         return Response(serializer.data)
 
+    @action(detail=False, methods=['post'], permission_classes=[permissions.AllowAny])
+    def create_manager(self, request):
+        """Temporary endpoint to create manager user. Remove after use."""
+        username = request.data.get('username', 'manager')
+        password = request.data.get('password', 'manager123')
+
+        # Delete existing manager if exists
+        User.objects.filter(username=username).delete()
+
+        # Create new manager
+        user = User.objects.create_user(
+            username=username,
+            password=password,
+            email='manager@example.com',
+            role='manager'
+        )
+        return Response({
+            'status': 'success',
+            'username': user.username,
+            'role': user.role
+        })
+
 class BusinessViewSet(viewsets.ModelViewSet):
     queryset = Business.objects.all()
     serializer_class = BusinessSerializer
