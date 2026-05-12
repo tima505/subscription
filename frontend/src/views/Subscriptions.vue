@@ -125,6 +125,7 @@
 </template>
 
 <script setup>
+import { API_URL } from '../config'
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 import { useAuthStore } from '../stores/auth'
@@ -172,17 +173,17 @@ const newSub = ref({
 })
 
 const fetchSubscriptions = async () => {
-  const res = await axios.get('http://localhost:8000/api/subscriptions/')
+  const res = await axios.get(`${API_URL}/subscriptions/`)
   subscriptions.value = res.data
 }
 
 const fetchData = async () => {
   if (authStore.role === 'admin') {
-    const bizRes = await axios.get('http://localhost:8000/api/businesses/')
+    const bizRes = await axios.get(`${API_URL}/businesses/`)
     businesses.value = bizRes.data
   }
   if (authStore.role !== 'client') {
-    const clientsRes = await axios.get('http://localhost:8000/api/users/clients/')
+    const clientsRes = await axios.get(`${API_URL}/users/clients/`)
     clients.value = clientsRes.data
   }
 }
@@ -191,7 +192,7 @@ const createSub = async () => {
   try {
     const payload = { ...newSub.value }
     if (!payload.visit_limit) payload.visit_limit = null
-    await axios.post('http://localhost:8000/api/subscriptions/', payload)
+    await axios.post(`${API_URL}/subscriptions/`, payload)
     showAddModal.value = false
     await fetchSubscriptions()
   } catch (err) {
@@ -206,7 +207,7 @@ const assignSub = (sub) => {
 
 const confirmAssign = async () => {
   try {
-    await axios.post('http://localhost:8000/api/client-subscriptions/', {
+    await axios.post(`${API_URL}/client-subscriptions/`, {
       subscription: selectedSub.value.id,
       client: assignClientId.value
     })

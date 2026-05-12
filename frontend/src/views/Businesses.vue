@@ -53,6 +53,7 @@
 </template>
 
 <script setup>
+import { API_URL } from '../config'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { PlusIcon, BriefcaseIcon } from 'lucide-vue-next'
@@ -62,13 +63,13 @@ const showAddModal = ref(false)
 const newBiz = ref({ name: '', description: '' })
 
 const fetchBusinesses = async () => {
-  const res = await axios.get('http://localhost:8000/api/businesses/')
+  const res = await axios.get(`${API_URL}/businesses/`)
   businesses.value = res.data
 }
 
 const addBusiness = async () => {
   try {
-    await axios.post('http://localhost:8000/api/businesses/', newBiz.value)
+    await axios.post(`${API_URL}/businesses/`, newBiz.value)
     showAddModal.value = false
     newBiz.value = { name: '', description: '' }
     await fetchBusinesses()

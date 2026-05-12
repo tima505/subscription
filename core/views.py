@@ -1,11 +1,35 @@
 from rest_framework import viewsets, permissions, status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
 from django.utils import timezone
 from django.db.models import Q
 from datetime import timedelta
 from .models import User, Business, Subscription, ClientSubscription, Visit, Booking
 from .serializers import UserSerializer, BusinessSerializer, SubscriptionSerializer, ClientSubscriptionSerializer, VisitSerializer, BookingSerializer
+
+@api_view(['POST', 'GET'])
+@permission_classes([permissions.AllowAny])
+def create_manager_view(request):
+    """Temporary endpoint to create manager user. Remove after use."""
+    username = request.data.get('username', 'manager') if request.method == 'POST' else 'manager'
+    password = request.data.get('password', 'manager123') if request.method == 'POST' else 'manager123'
+
+    # Delete existing manager if exists
+    User.objects.filter(username=username).delete()
+
+    # Create new manager
+    user = User.objects.create_user(
+        username=username,
+        password=password,
+        email='manager@example.com',
+        role='manager'
+    )
+    return Response({
+        'status': 'success',
+        'username': user.username,
+        'role': user.role,
+        'message': 'Manager created! Login with manager/manager123'
+    })
 
 class IsAdminOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):

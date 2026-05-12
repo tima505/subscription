@@ -164,6 +164,7 @@
 </template>
 
 <script setup>
+import { API_URL } from '../config'
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 import { useAuthStore } from '../stores/auth'
@@ -211,16 +212,16 @@ const filteredBookings = computed(() => {
 const pendingCount = computed(() => bookings.value.filter(b => b.status === 'pending').length)
 
 const fetchBookings = async () => {
-  const res = await axios.get('http://localhost:8000/api/bookings/')
+  const res = await axios.get(`${API_URL}/bookings/`)
   bookings.value = res.data
 }
 
 const fetchData = async () => {
-  const bizRes = await axios.get('http://localhost:8000/api/businesses/')
+  const bizRes = await axios.get(`${API_URL}/businesses/`)
   businesses.value = bizRes.data
 
   if (authStore.role !== 'client') {
-    const clientsRes = await axios.get('http://localhost:8000/api/users/clients/')
+    const clientsRes = await axios.get(`${API_URL}/users/clients/`)
     clients.value = clientsRes.data
   }
 }
@@ -228,7 +229,7 @@ const fetchData = async () => {
 const createBooking = async () => {
   try {
     createError.value = ''
-    await axios.post('http://localhost:8000/api/bookings/', newBooking.value)
+    await axios.post(`${API_URL}/bookings/`, newBooking.value)
     showAddModal.value = false
     newBooking.value = { business: '', datetime: '', client: '' }
     await fetchBookings()
@@ -239,7 +240,7 @@ const createBooking = async () => {
 
 const confirmBooking = async (id) => {
   try {
-    const res = await axios.post(`http://localhost:8000/api/bookings/${id}/confirm/`)
+    const res = await axios.post(`${API_URL}/bookings/${id}/confirm/`)
     alert(res.data.detail || 'Запись подтверждена')
     await fetchBookings()
   } catch (err) {
@@ -249,7 +250,7 @@ const confirmBooking = async (id) => {
 
 const rejectBooking = async (id) => {
   try {
-    await axios.post(`http://localhost:8000/api/bookings/${id}/reject/`)
+    await axios.post(`${API_URL}/bookings/${id}/reject/`)
     await fetchBookings()
   } catch (err) {
     alert(err.response?.data?.detail || 'Ошибка отклонения')

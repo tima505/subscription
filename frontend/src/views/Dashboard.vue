@@ -76,6 +76,7 @@
 </template>
 
 <script setup>
+import { API_URL } from '../config'
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useAuthStore } from '../stores/auth'
@@ -88,12 +89,12 @@ const visits = ref([])
 
 onMounted(async () => {
   if (authStore.role === 'client') {
-    const res = await axios.get('http://localhost:8000/api/client-subscriptions/')
+    const res = await axios.get(`${API_URL}/client-subscriptions/`)
     clientSubscriptions.value = res.data
   } else {
-    const clientsRes = await axios.get('http://localhost:8000/api/users/clients/')
+    const clientsRes = await axios.get(`${API_URL}/users/clients/`)
     clients.value = clientsRes.data
-    const visitsRes = await axios.get('http://localhost:8000/api/visits/')
+    const visitsRes = await axios.get(`${API_URL}/visits/`)
     visits.value = visitsRes.data
   }
 })

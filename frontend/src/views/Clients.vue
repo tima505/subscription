@@ -271,6 +271,7 @@
 </template>
 
 <script setup>
+import { API_URL } from '../config'
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 import { XIcon, PlusIcon, SearchIcon, PhoneIcon, MailIcon, CreditCardIcon, ClockIcon, CalendarIcon, MinusCircleIcon } from 'lucide-vue-next'
@@ -331,31 +332,31 @@ const totalVisitsLeft = computed(() => {
 })
 
 const fetchClients = async () => {
-  const res = await axios.get('http://localhost:8000/api/users/clients/')
+  const res = await axios.get(`${API_URL}/users/clients/`)
   clients.value = res.data
 }
 
 const fetchAllSubs = async () => {
-  const res = await axios.get('http://localhost:8000/api/client-subscriptions/')
+  const res = await axios.get(`${API_URL}/client-subscriptions/`)
   allSubs.value = res.data
 }
 
 const openClient = async (client) => {
   selectedClient.value = client
   // Fetch subscriptions
-  const subRes = await axios.get('http://localhost:8000/api/client-subscriptions/')
+  const subRes = await axios.get(`${API_URL}/client-subscriptions/`)
   clientSubs.value = subRes.data.filter(s => s.client === client.id)
   // Fetch visits
-  const visitRes = await axios.get('http://localhost:8000/api/visits/')
+  const visitRes = await axios.get(`${API_URL}/visits/`)
   clientVisits.value = visitRes.data.filter(v => v.client === client.id)
   // Fetch bookings
-  const bookingRes = await axios.get('http://localhost:8000/api/bookings/')
+  const bookingRes = await axios.get(`${API_URL}/bookings/`)
   clientBookings.value = bookingRes.data.filter(b => b.client === client.id)
 }
 
 const deductVisit = async (subId) => {
   try {
-    const res = await axios.post(`http://localhost:8000/api/client-subscriptions/${subId}/deduct_visit/`)
+    const res = await axios.post(`${API_URL}/client-subscriptions/${subId}/deduct_visit/`)
     alert(`Посещение списано. Осталось: ${res.data.remaining !== null ? res.data.remaining : 'Безлимит'}`)
     await openClient(selectedClient.value)
     await fetchAllSubs()
@@ -366,7 +367,7 @@ const deductVisit = async (subId) => {
 
 const createUser = async () => {
   try {
-    await axios.post('http://localhost:8000/api/users/', newUser.value)
+    await axios.post(`${API_URL}/users/`, newUser.value)
     showAddUserModal.value = false
     newUser.value = { username: '', password: '', first_name: '', last_name: '', phone: '', role: 'client' }
     alert('Пользователь успешно создан!')
